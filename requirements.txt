@@ -1,0 +1,12 @@
+asgiref==3.8.1
+Django==5.0.7
+djangorestframework==3.15.2
+environs==11.0.0
+marshmallow==3.21.3
+mysqlclient==2.2.4
+packaging==24.1
+pillow==10.4.0
+python-dotenv==1.0.1
+sqlparse==0.5.1
+typing_extensions==4.12.2
+whitenoise==6.7.0
