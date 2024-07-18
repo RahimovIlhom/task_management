@@ -11,7 +11,7 @@ class Course(models.Model):
 
 
 class Task(models.Model):
-    mentor = models.ForeignKey('Profile', on_delete=models.SET_NULL, null=True, blank=True)
+    mentor = models.ForeignKey('accounts.Profile', on_delete=models.SET_NULL, null=True, blank=True)
     course = models.ForeignKey('Course', on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(max_length=255)
     information = models.TextField(null=True, blank=True)
@@ -45,7 +45,7 @@ TASK_RESULT_STATUS = (
 
 class TaskResult(models.Model):
     task = models.ForeignKey('Task', on_delete=models.CASCADE)
-    student = models.ForeignKey('Profile', on_delete=models.CASCADE)
+    student = models.ForeignKey('accounts.Profile', on_delete=models.CASCADE)
     file = models.FileField(upload_to='task_results', null=True, blank=True,
                             validators=[FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'docx', 'xlsx', 'pptx'])])
     created_at = models.DateTimeField(auto_now_add=True)
@@ -57,10 +57,19 @@ class TaskResult(models.Model):
         return f"{self.task.title}-{self.student.fullname}"
 
 
+RANKS_CHOICES = (
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+)
+
+
 class TaskRank(models.Model):
     task = models.ForeignKey('Task', on_delete=models.CASCADE)
-    student = models.ForeignKey('Profile', on_delete=models.CASCADE)
-    rank = models.PositiveIntegerField(default=5, choices=[1, 2, 3, 4, 5])
+    student = models.ForeignKey('accounts.Profile', on_delete=models.CASCADE)
+    rank = models.PositiveIntegerField(default=5, choices=RANKS_CHOICES, db_default=5)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

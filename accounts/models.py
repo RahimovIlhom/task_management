@@ -1,10 +1,11 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.contrib.auth import get_user_model
 
 
 class CustomUser(AbstractUser):
-    profile = models.ForeignKey('Profile', on_delete=models.SET_NULL, null=True, blank=True)
+    pass
 
     def __str__(self):
         return self.username
@@ -16,11 +17,13 @@ USER_STATUS = (
     ('student', 'Student'),
 )
 
+user_model = get_user_model()
+
 
 class Profile(models.Model):
     user_type = models.CharField(max_length=10, choices=USER_STATUS, default='student')
-    user = models.OneToOneField('CustomUser', on_delete=models.CASCADE, primary_key=True)
-    course = models.ForeignKey('Course', on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True, related_name='profile')
+    course = models.ForeignKey('task_app.Course', on_delete=models.SET_NULL, null=True, blank=True)
     fullname = models.CharField(max_length=255)
     age = models.PositiveIntegerField(null=True, blank=True, validators=[
         MinValueValidator(5), MaxValueValidator(100),
@@ -37,7 +40,7 @@ class Profile(models.Model):
 
 class ClassName(models.Model):
     name = models.CharField(max_length=255)
-    course = models.ForeignKey('Course', on_delete=models.SET_NULL, null=True, blank=True)
+    course = models.ForeignKey('task_app.Course', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
