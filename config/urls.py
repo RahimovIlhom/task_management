@@ -19,7 +19,7 @@ schema_view = get_schema_view(
       license=openapi.License(name="BSD License"),
    ),
    public=True,
-   permission_classes=[permissions.IsAuthenticated],
+   permission_classes=[permissions.AllowAny],
 )
 
 
@@ -29,6 +29,7 @@ urlpatterns = [
     path('docs/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('admin/', admin.site.urls),
     path('api/v1/accounts/', include('accounts.urls')),
+    path('api/v1/task/', include('task_app.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

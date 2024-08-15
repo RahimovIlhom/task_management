@@ -26,7 +26,7 @@ class Task(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.mentor.fullname}-{self.title}"
+        return f"{self.mentor}-{self.title}"
 
 
 class Assignment(models.Model):
@@ -50,11 +50,19 @@ class TaskResult(models.Model):
                             validators=[FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'docx', 'xlsx', 'pptx'])])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    assignments = models.ManyToManyField('Assignment', blank=True, related_name='task_results')
+    assignments = models.ManyToManyField('AssignmentGrade', blank=True, related_name='task_result_grades')
     status = models.CharField(max_length=10, choices=TASK_RESULT_STATUS, default='pending')
 
     def __str__(self):
         return f"{self.task.title}-{self.student.fullname}"
+
+
+class AssignmentGrade(models.Model):
+    assignment = models.ForeignKey('Assignment', on_delete=models.CASCADE)
+    grade = models.DecimalField(max_digits=5, decimal_places=1)
+
+    def __str__(self):
+        return f"{self.assignment.title}-{self.grade}"
 
 
 RANKS_CHOICES = (

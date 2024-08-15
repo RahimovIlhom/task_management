@@ -86,14 +86,31 @@ class CustomTokenObtainSerializer(serializers.Serializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user = serializers.SerializerMethodField(read_only=True)
+    user = serializers.SerializerMethodField(read_only=True, method_name='get_user')
+    course = serializers.SerializerMethodField()
+    class_name = serializers.SerializerMethodField()
+    # course_name = serializers.SerializerMethodField(read_only=True, method_name='get_course_name')
+    # user_class_name = serializers.SerializerMethodField(read_only=True, method_name='get_user_class_name')
 
     class Meta:
         model = Profile
-        fields = ['user_id', 'user_type', 'user', 'course', 'fullname', 'age', 'image', 'information', 'class_name']
+        fields = ['user_id', 'user_type', 'user', 'course', 'fullname', 'age', 'image', 'information',
+                  'class_name']
 
     def get_user(self, obj):
         return obj.user.username
+
+    def get_course(self, obj):
+        return obj.course.name
+
+    def get_class_name(self, obj):
+        return obj.class_name.name
+
+    # def get_course_name(self, obj):
+    #     return obj.course.name
+
+    # def get_user_class_name(self, obj):
+    #     return obj.class_name.name
 
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
@@ -119,21 +136,17 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
 
 
 class ClassNameSerializer(serializers.ModelSerializer):
-    course = serializers.SerializerMethodField()
+    course_name = serializers.SerializerMethodField()
 
     class Meta:
         model = ClassName
-        fields = ['id', 'name', 'course']
+        fields = ['id', 'name', 'course', 'course_name']
 
-    def get_course(self, obj):
+    def get_course_name(self, obj):
         return obj.course.name
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
         instance.course = validated_data.get('course', instance.course)
-        if instance.course:
-            print('Course not found')
-
         instance.save()
         return instance
-

@@ -119,12 +119,16 @@ class ClassNameUpdateApiView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = ClassNameSerializer
 
-    # def patch(self, request, *args, **kwargs):
-    #     user_type = Profile.objects.get(user=request.user).user_type
-    #     if user_type == 'admin' or user_type == 'mentor':
-    #
-    #     else:
-    #         return Response({"message": "Sizda bu sahifa uchun ruxsat yo'q"}, status=status.HTTP_403_FORBIDDEN)
+    def patch(self, request, *args, **kwargs):
+        class_name = self.get_object()
+        user_type = Profile.objects.get(user=request.user).user_type
+        if user_type == 'admin' or user_type == 'mentor':
+            serializer = ClassNameSerializer(class_name, data=request.data, partial=True)
+            serializer.is_valid()
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "Sizda bu sahifa uchun ruxsat yo'q"}, status=status.HTTP_403_FORBIDDEN)
 
 
 class ClassNameListApiView(generics.ListAPIView):
